@@ -196,3 +196,187 @@ Authorization: Bearer <JWT token>
 }
 
 ```
+
+---
+
+## Endpoints de Workouts
+
+Base URL: `http://localhost:3000/api/workouts`
+
+Todos los endpoints requieren token JWT del usuario en el header
+
+```http
+Authorization: Bearer <JWT token>
+```
+
+### Crear un workout
+
+- **Método:** `POST`
+- **Ruta:** `/`
+- **Descripción:** Crea un nuevo workout para el usuario autenticado.
+- **Body JSON:**
+```json
+{
+  "title": "Rutina de pecho",
+  "description": "Entrenamiento de fuerza para pecho y tríceps",
+  "duration": 45
+}
+
+```
+- **Repuesta exitosa (201 Created):**
+
+```json
+{
+  "message": "Workout creado correctamente",
+  "workout": {
+    "_id": "68c9f8d3a8b2c12345678901",
+    "title": "Rutina de pecho",
+    "description": "Entrenamiento de fuerza para pecho y tríceps",
+    "duration": 45,
+    "user": "68c74a5e09036fec7cb9232f",
+    "createdAt": "2025-09-14T20:00:00.000Z",
+    "updatedAt": "2025-09-14T20:00:00.000Z"
+  }
+}
+```
+
+- **Errores de validación (400 Bad Request):**
+
+```json
+{
+  "message": "Errores de validación",
+  "errors": [
+    { "msg": "El título es obligatorio", "param": "title", "location": "body" },
+    { "msg": "La duración es obligatoria", "param": "duration", "location": "body" }
+  ]
+}
+```
+
+### Obtener todos los workouts del usuario autenticado
+
+- **Método:** `GET`
+- **Ruta:** `/`
+- **Descripción:** Devuelve todos los workouts del usuario autenticado.
+- **Respuesta exictosa (200 OK)**
+```json
+[
+  {
+    "_id": "68c9f8d3a8b2c12345678901",
+    "title": "Rutina de pecho",
+    "description": "Entrenamiento de fuerza para pecho y tríceps",
+    "duration": 45,
+    "user": "68c74a5e09036fec7cb9232f",
+    "createdAt": "2025-09-14T20:00:00.000Z",
+    "updatedAt": "2025-09-14T20:00:00.000Z"
+  },
+  {
+    "_id": "68c9f8d3a8b2c12345678902",
+    "title": "Cardio intenso",
+    "description": "Sesión de cardio HIIT de 30 minutos",
+    "duration": 30,
+    "user": "68c74a5e09036fec7cb9232f",
+    "createdAt": "2025-09-14T21:00:00.000Z",
+    "updatedAt": "2025-09-14T21:00:00.000Z"
+  }
+]
+```
+
+### Obtener un workout por ID
+
+- **Método:** `GET`
+- **Ruta:** `/id`
+Por Ejemplo: `http://localhost:3000/api/workouts/68c77dc5c61d88cf3c08a046`
+- **Descripción:** Devuelve un workout específico del usuario autenticado.
+- **Respuesta exictosa (200 OK)**
+```json
+{
+  "_id": "68c9f8d3a8b2c12345678901",
+  "title": "Rutina de pecho",
+  "description": "Entrenamiento de fuerza para pecho y tríceps",
+  "duration": 45,
+  "user": "68c74a5e09036fec7cb9232f",
+  "createdAt": "2025-09-14T20:00:00.000Z",
+  "updatedAt": "2025-09-14T20:00:00.000Z"
+}
+```
+
+- **Workout no encontrado (404 Not Found):**
+
+```json
+{
+  "message": "Workout no encontrado"
+}
+```
+
+### Actualizar un workout
+
+- **Método:** `PUT`
+- **Ruta:** `/id`
+Por Ejemplo: `http://localhost:3000/api/workouts/68c77dc5c61d88cf3c08a046`
+- **Descripción:** Actualiza un workout del usuario autenticado (solo los campos que envíes).
+- **Body JSON (opcional):**
+```json
+{
+  "title": "Rutina de pecho y hombros",
+  "description": "Pecho + hombros en superseries",
+  "duration": 50
+}
+```
+
+- **Repuesta exitosa (200 OK):**
+
+```json
+{
+  "message": "Workout actualizado correctamente",
+  "workout": {
+    "_id": "68c9f8d3a8b2c12345678901",
+    "title": "Rutina de pecho y hombros",
+    "description": "Pecho + hombros en superseries",
+    "duration": 50,
+    "user": "68c74a5e09036fec7cb9232f",
+    "createdAt": "2025-09-14T20:00:00.000Z",
+    "updatedAt": "2025-09-14T21:30:00.000Z"
+  }
+}
+
+```
+
+- **Errores de validación (400 Bad Request):**
+
+```json
+{
+  "message": "Errores de validación",
+  "errors": [
+    { "msg": "El título debe tener al menos 3 caracteres", "param": "title", "location": "body" }
+  ]
+}
+```
+
+- **Errores de validación (404 not found):**
+
+```json
+{
+  "message": "Workout no encontrado"
+}
+```
+
+### Eliminar un workout
+
+- **Método:** `DETELE`
+- **Ruta:** `/id`
+Por Ejemplo: `http://localhost:3000/api/workouts/68c77dc5c61d88cf3c08a046`
+- **Descripción:** Elimina un workout del usuario autenticado.
+- **Respuesta exictosa (200 OK):**
+```json
+{
+  "message": "Workout eliminado correctamente"
+}
+
+```
+
+- **Workout no encontrado (404 Not Found):**
+```json
+{
+  "message": "Workout no encontrado"
+}
+```
