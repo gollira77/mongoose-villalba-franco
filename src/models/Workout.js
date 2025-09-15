@@ -22,10 +22,14 @@ const workoutSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    deleted: {
+      type: Boolean,
+      default: false // Solo si quieres eliminación lógica
+    },
   },
   {
     timestamps: true, 
   }
 );
 
-export const Workout = mongoose.model("Workout", workoutSchema);
+export default mongoose.model("Workout", workoutSchema);

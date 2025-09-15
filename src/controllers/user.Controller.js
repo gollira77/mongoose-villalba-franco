@@ -1,5 +1,6 @@
 import User from "../models/User.js";
-import Trainer from "../models/Trainer.js"; // Import correcto con default
+import Trainer from "../models/Trainer.js"; 
+import Workout from "../models/Workout.js"; 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -33,18 +34,21 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Login de usuario
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+const JWT_SECRET = process.env.JWT_SECRET;
 
+// Login usuario
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
-    const token = jwt.sign({ id: user._id }, "secretKey", { expiresIn: "1h" });
+    // ⚡ Token sin expiración
+    const token = jwt.sign({ id: user._id }, JWT_SECRET);
 
     res.status(200).json({
       message: "Login exitoso",
@@ -56,7 +60,7 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al iniciar sesión", error: error.message });
+    res.status(500).json({ message: "Error en login", error: error.message });
   }
 };
 
@@ -105,11 +109,14 @@ export const updateUser = async (req, res) => {
 // Eliminar usuario
 export const deleteUser = async (req, res) => {
   try {
+    // Buscar y eliminar al usuario
     const user = await User.findByIdAndDelete(req.params.id);
-
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
-    res.status(200).json({ message: "Usuario eliminado permanentemente" });
+    // Eliminar todos los workouts asociados al usuario
+    await Workout.deleteMany({ user: user._id });
+
+    res.status(200).json({ message: "Usuario y workouts eliminados correctamente" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar usuario", error: error.message });
   }

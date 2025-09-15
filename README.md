@@ -1,5 +1,47 @@
 # API REST con Node.js + Express + Mongoose
 
+Justificación de Embebido vs Referenciado
+
+Embebido:
+Ejemplo: profile dentro del User.
+Se utiliza cuando los datos siempre viajan juntos y no necesitan ser compartidos con otras colecciones.
+Acceso directo: user.profile.age → no requiere populate.
+
+Referenciado:
+Ejemplo: relación 1:1 User → Trainer o 1:N User → Workouts.
+Permite mantener datos normalizados y acceder a información completa usando populate.
+Ejemplo de populate:
+const userWithTrainer = await User.findById(userId).populate("trainer");
+console.log(userWithTrainer.trainer.name);
+
+Eliminaciones lógicas y en cascada
+
+Users → Workouts (cascada):
+Cuando se elimina un usuario, todos sus workouts asociados se eliminan automáticamente.
+
+Se puede implementar:
+Eliminación lógica: marcar deleted: true.
+Eliminación permanente: usar deleteMany sobre la colección Workouts.
+
+N:M y 1:1:
+Al eliminar un trainer, los users asignados no se eliminan, pero su campo trainer se pone en null.
+Endpoint especial para relaciones N:M o 1:1
+
+Asignar un usuario a un trainer:
+Método: POST
+Ruta: /trainers/:trainerId/addUser/:userId
+Permite vincular un usuario a un trainer sin reemplazar otros datos.
+Ejemplo de respuesta:
+
+{
+  "message": "Usuario asignado correctamente al trainer",
+  "trainer": {
+    "id": "64f...",
+    "name": "Juan",
+    "users": ["64f...", "68c..."]
+  }
+}
+
 ## Endpoints de Users 
 
 Base URL: `http://localhost:3000/api/users`
