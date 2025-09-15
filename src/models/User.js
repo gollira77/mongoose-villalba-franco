@@ -17,6 +17,17 @@ const userSchema = new mongoose.Schema({
         required: true, 
         minlength: 6 
     },
+     trainer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Trainer",
+      default: null,
+    },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     deleted: { 
         type: Boolean, 
         default: false 
@@ -25,4 +36,4 @@ const userSchema = new mongoose.Schema({
   { timestamps: true }
 );
 
-export const User = mongoose.model("User", userSchema);
+export default mongoose.model("User", userSchema);

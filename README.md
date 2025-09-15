@@ -16,7 +16,8 @@ Base URL: `http://localhost:3000/api/users`
 {
   "name": "Franco",
   "email": "franco@test.com",
-  "password": "123456"
+  "password": "123456",
+  "trainer": "64f..."  // Opcional, ID de un trainer asignado
 }
 ```
 - **Repuesta exitosa (201 Created):**
@@ -27,7 +28,8 @@ Base URL: `http://localhost:3000/api/users`
   "user": {
     "id": "64f...",
     "name": "Franco",
-    "email": "franco@test.com"
+    "email": "franco@test.com",
+    "trainer": "64f..."  // ID del trainer asignado
   }
 }
 ```
@@ -74,7 +76,8 @@ Si algún campo no cumple las validaciones, se devuelve 400 Bad Request:
   "user": {
     "id": "64f...",
     "name": "Franco",
-    "email": "franco@test.com"
+    "email": "franco@test.com",
+    "trainer": "64f..."  // ID del trainer asignado
   }
 }
 ```
@@ -102,6 +105,12 @@ Authorization: Bearer <JWT token>
   "_id": "64f...",
   "name": "Franco",
   "email": "franco@test.com",
+  "trainer": {
+    "id": "64f...",
+    "name": "Juan",
+    "email": "juan@test.com",
+    "specialty": "Fuerza"
+  },
   "createdAt": "...",
   "updatedAt": "..."
 }
@@ -127,7 +136,8 @@ Authorization: Bearer <JWT token>
 {
   "name": "Franco Updated",
   "email": "franco2@test.com",
-  "password": "newpassword"
+  "password": "newpassword",
+  "trainer": "64f..."  // ID del nuevo trainer
 }
 ```
 - **Repuesta exitosa (200 OK):**
@@ -138,7 +148,8 @@ Authorization: Bearer <JWT token>
   "user": {
     "id": "68c74a5e09036fec7cb9232f",
     "name": "Franco Updated",
-    "email": "franco2@test.com"
+    "email": "franco2@test.com",
+    "trainer": "64f..."
   }
 }
 ```
@@ -380,3 +391,180 @@ Por Ejemplo: `http://localhost:3000/api/workouts/68c77dc5c61d88cf3c08a046`
   "message": "Workout no encontrado"
 }
 ```
+
+## Endpoints de Trainers
+
+Base URL: `http://localhost:3000/api/trainers`
+
+---
+
+### Crear un trainer
+
+- **Método:** `POST`
+- **Ruta:** `/`
+- **Descripción:** Crea un nuevo entrenador en la base de datos.
+- **Body JSON:**
+```json
+{
+  "name": "Juan",
+  "email": "juan@test.com",
+  "specialty": "Fuerza"
+}
+```
+
+- **Respuesta exitosa (201 Created):**
+
+```json
+{
+  "message": "Entrenador creado correctamente",
+  "trainer": {
+    "id": "64f...",
+    "name": "Juan",
+    "email": "juan@test.com",
+    "specialty": "Fuerza"
+  }
+}
+```
+
+- **Errores (500 Internal Server Error):**
+
+```json
+{
+  "message": "Error al crear entrenador",
+  "error": "Detalle del error"
+}
+
+```
+
+### Obtener todos los trainers
+
+- **Método:** `GET`
+- **Ruta:** `/`
+- **Descripción:** Devuelve todos los entrenadores registrados.
+- **Respuesta exitosa (200 OK):**
+
+```json
+[
+  {
+    "id": "64f...",
+    "name": "Juan",
+    "email": "juan@test.com",
+    "specialty": "Fuerza"
+  },
+  {
+    "id": "64f...",
+    "name": "Maria",
+    "email": "maria@test.com",
+    "specialty": "Cardio"
+  }
+]
+```
+
+### Obtener un trainer por ID
+
+- **Método:** `GET`
+- **Ruta:** `/id`
+- **Descripción:** Devuelve un entrenador específico.
+- **Respuesta exitosa (200 OK):**
+```json
+{
+  "id": "64f...",
+  "name": "Juan",
+  "email": "juan@test.com",
+  "specialty": "Fuerza"
+}
+```
+
+- **Trainer no encontrado (404):**
+```json
+{
+  "message": "Entrenador no encontrado"
+}
+```
+
+### Actualizar trainer
+
+- **Método:** `PUT`
+- **Ruta:** `/id`
+- **Body JSON (campos opcionales a actualizar):**
+```json
+{
+  "name": "Juan Updated",
+  "email": "juan2@test.com",
+  "specialty": "Fuerza y Cardio"
+}
+
+```
+
+- **Respuesta exitosa (200 OK):**
+```json
+{
+  "message": "Entrenador actualizado correctamente",
+  "trainer": {
+    "id": "64f...",
+    "name": "Juan Updated",
+    "email": "juan2@test.com",
+    "specialty": "Fuerza y Cardio"
+  }
+}
+```
+
+- **Trainer no encontrado (404):**
+```json
+{
+  "message": "Entrenador no encontrado"
+}
+
+```
+
+### Eliminar trainer
+
+- **Método:** `DETELE`
+- **Ruta:** `/id`
+- **Respuesta exitosa (200 OK):**
+```json
+{
+  "message": "Entrenador eliminado correctamente"
+}
+
+```
+
+- **Trainer no encontrado (404):**
+```json
+{
+  "message": "Entrenador no encontrado"
+}
+```
+
+### Asignar un usuario a un trainer (relación N:M)
+
+- **Método:** `POST`
+- **Ruta:** `/trainerId/addUser/userId`
+- **Descripción:** Agrega un usuario a la lista de usuarios entrenados por este trainer.
+- **Respuesta exitosa (200 OK):**
+```json
+{
+  "message": "Usuario agregado al entrenador correctamente",
+  "trainer": {
+    "id": "64f...",
+    "name": "Juan",
+    "users": ["68c...", "68d..."]
+  }
+}
+
+```
+
+- **Trainer no encontrado (404):**
+```json
+{
+  "message": "Trainer o usuario no encontrado"
+}
+
+```
+
+
+
+
+
+
+

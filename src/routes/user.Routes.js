@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, getProfile, updateUser, deleteUser } from "../controllers/user.Controller.js";
+import { registerUser, loginUser, getProfile, updateUser, deleteUser, assignTrainerToUser, addFriend } from "../controllers/user.Controller.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { registerValidation, loginValidation } from "../validators/userValidators.js";
 import { validationResult } from "express-validator";
@@ -18,5 +18,13 @@ router.post("/login", loginValidation, validate, loginUser);
 router.get("/profile", authMiddleware, getProfile);
 router.put("/:id", authMiddleware, updateUser);
 router.delete("/:id", authMiddleware, deleteUser);
+
+// Asignar un trainer a un usuario
+// PUT /api/users/:userId/trainer/:trainerId
+router.put("/:userId/trainer/:trainerId", authMiddleware, assignTrainerToUser);
+
+// Agregar un amigo a un usuario (relación N:M)
+// PUT /api/users/:userId/friends/:friendId
+router.put("/:userId/friends/:friendId", authMiddleware, addFriend);
 
 export default router;
