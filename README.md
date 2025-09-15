@@ -111,3 +111,88 @@ Authorization: Bearer <JWT token>
 Requiere token válido.
 Si el token está ausente o inválido → 401 Acceso denegado
 
+### Actualizar usuario
+
+- **Método:** `/PUT`
+- **Ruta:** `/id`
+
+ejemplo de ruta: http://localhost:3000/api/users/68c74a5e09036fec7cb9232f
+
+- **Headers:**
+Authorization: Bearer <JWT token>
+
+- **Body JSON (opcional, solo los campos a actualizar):**
+
+```json
+{
+  "name": "Franco Updated",
+  "email": "franco2@test.com",
+  "password": "newpassword"
+}
+```
+- **Repuesta exitosa (200 OK):**
+
+```json
+{
+  "message": "Usuario actualizado correctamente",
+  "user": {
+    "id": "68c74a5e09036fec7cb9232f",
+    "name": "Franco Updated",
+    "email": "franco2@test.com"
+  }
+}
+```
+
+- **Errores de validación (400 Bad Request):**
+
+```json
+{
+  "errors": [
+    { "msg": "ID de usuario inválido", "param": "id", "location": "params" },
+    { "msg": "Email inválido", "param": "email", "location": "body" }
+  ]
+}
+```
+
+- **Errores de validación (400 Bad Request):**
+```json
+{
+  "message": "Usuario no encontrado"
+}
+```
+
+### Eliminar usuario 
+
+- **Método:** `/DETELE`
+- **Ruta:** `/id`
+
+ejemplo de ruta: http://localhost:3000/api/users/68c74a5e09036fec7cb9232f
+
+- **Headers:**
+Authorization: Bearer <JWT token>
+
+- **Repuesta exitosa (200 OK):**
+
+```json
+{
+  "message": "Usuario eliminado permanentemente"
+}
+```
+
+- **Errores de validación (400 Bad Request):**
+
+```json
+{
+  "errors": [
+    { "msg": "ID de usuario inválido", "param": "id", "location": "params" }
+  ]
+}
+```
+
+- **Usuario no encontrado (404):**
+```json
+{
+  "message": "Usuario no encontrado"
+}
+
+```

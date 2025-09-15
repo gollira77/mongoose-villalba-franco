@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, getProfile } from "../controllers/user.Controller.js";
+import { registerUser, loginUser, getProfile, updateUser, deleteUser } from "../controllers/user.Controller.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { registerValidation, loginValidation } from "../validators/userValidators.js";
 import { validationResult } from "express-validator";
@@ -13,9 +13,10 @@ const validate = (req, res, next) => {
   next();
 };
 
-
 router.post("/register", registerValidation, validate, registerUser);
 router.post("/login", loginValidation, validate, loginUser);
 router.get("/profile", authMiddleware, getProfile);
+router.put("/:id", authMiddleware, updateUser);
+router.delete("/:id", authMiddleware, deleteUser);
 
 export default router;

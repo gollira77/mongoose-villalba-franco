@@ -64,3 +64,37 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ message: "Error al obtener el perfil", error });
   }
 };
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Evitar modificar password directamente sin encriptar
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 10);
+    }
+
+    const user = await User.findByIdAndUpdate(id, updates, { new: true });
+
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    res.status(200).json({ message: "Usuario actualizado correctamente", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar usuario", error });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByIdAndDelete(id);
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    res.status(200).json({ message: "Usuario eliminado permanentemente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar usuario", error });
+  }
+};
+
